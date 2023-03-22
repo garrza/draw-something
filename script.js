@@ -33,6 +33,7 @@ rainbowBtn.onclick = () => setCurrentMode("rainbow");
 eraserBtn.onclick = () => setCurrentMode("eraser");
 clearBtn.onclick = () => reloadGrid()
 sizeSlider.onmousemove = (e) => updateSizeValue(e.target.value);
+sizeSlider.onchange = (e) => changeSize(e.target.value);
 
 let mouseDown = false;
 document.body.onmousedown = () => (mouseDown = true);
@@ -60,14 +61,15 @@ function clearGrid(){
 function setupGrid(size) {
     grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
     grid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
-
+    size *= size;
+    
     for (let i = 1; i <= size; i++) {
         const gridElement = document.createElement("div");
         gridElement.id = "grid-element-" + i;
         gridElement.classList.add("grid-element");
         gridElement.addEventListener('mouseover', changeColor);
         gridElement.addEventListener('mousedown', changeColor);
-        grid.appendChild(gridChild);
+        grid.appendChild(gridElement);
     }
 }
 
@@ -81,7 +83,29 @@ function changeColor(e) {
     } else if (currentMode === 'color') {
         e.target.style.backgroundColor = currentColor;
     } else if (currentMode === 'eraser') {
-        e.target.style.backgroundColor = '#fefefe';
+        e.target.style.backgroundColor = '#dde6e1';
     }
 }
 
+function activateButton(newMode) {
+    if (currentMode === 'rainbow') {
+        rainbowBtn.classList.remove('active')
+    } else if (currentMode === 'color') {
+        colorBtn.classList.remove('active')
+    } else if (currentMode === 'eraser') {
+        eraserBtn.classList.remove('active')
+    }
+
+    if (newMode === 'rainbow') {
+        rainbowBtn.classList.add('active')
+    } else if (newMode === 'color') {
+        colorBtn.classList.add('active')
+    } else if (newMode === 'eraser') {
+        eraserBtn.classList.add('active')
+    }
+}
+
+window.onload = () => {
+    setupGrid(DEFAULT_SIZE)
+    activateButton(DEFAULT_MODE)
+  }
